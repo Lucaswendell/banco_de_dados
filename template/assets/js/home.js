@@ -14,7 +14,10 @@ function excluir(evt) {
     title: "Você tem certeza?",
     text: "Uma vez deletado, você não poderá recuperar!",
     icon: "warning",
-    buttons: true,
+    buttons: {
+      cancel: "NÃO",
+      defeat: "SIM",
+    },
     dangerMode: true,
   }).then((willDelete) => {
     if (willDelete) {
@@ -22,17 +25,35 @@ function excluir(evt) {
         url: "excluir/" + id,
         method: "DELETE",
         dataType: "JSON",
-        success: function () {
+        success: function (result) {
           $("#tr-" + id).fadeOut(500);
+          let clientes = $(".clientes");
+
+          if (clientes.length === 0) {
+            $("#table-body").html(`
+              <tr>
+                  <td colspan="9">Nenhum resultado encontrado.</td>
+              </tr>`);
+          }
         },
         error: function ({ responseText }) {
-          let {
-            veiculo: { error },
-          } = JSON.parse(responseText);
-          swal({
-            title: error,
-            icon: "error",
-          });
+          try {
+            let {
+              cliente: { error },
+            } = JSON.parse(responseText);
+            swal({
+              title: "Erro",
+              icon: "error",
+              text: error,
+            });
+          } catch (e) {
+            console.log(e.message);
+            swal({
+              title: "Erro",
+              icon: "error",
+              text: "Erro ao tentar deletar cliente.",
+            });
+          }
         },
       });
     }
@@ -42,87 +63,54 @@ function excluir(evt) {
 function pesquisar(evt) {
   evt.preventDefault();
   let pesquisa = $("#pesquisa").val();
-  let modoPlaca = $("#placa")[0];
-  let modoMarca = $("#marcaModelo")[0];
 
   if (pesquisa === "") {
+    location.reload();
     return;
   }
 
-  if (modoPlaca.checked) {
-    $(".btn-resetar")[0].style.display = "inline-block"
+  $.ajax({
+    url: "" + pesquisa,
+    method: "GET",
+    dataType: "JSON",
+    success: function ({ cliente }) {
+      $(".btn-resetar")[0].style.display = "inline-block";
 
-    $.ajax({
-      url: "" + pesquisa + "/placa",
-      method: "GET",
-      dataType: "JSON",
-      success: function ({ veiculo }) {
-        let { id, placa, modelo, marca, dataCadastro } = veiculo;
-        $("#table-body").html(`
-        <tr id="tr-${id}">
-          <td>${modelo}</td>
-          <td>${marca}</td>
-          <td>${placa}</td>
-          <td>${dataCadastro}</td>
-          <td><a  class="table-link" href="editar/${id}"><i class="icon-pencil2"></i></a></td>
-          <td><a href="" class="excluir table-link" id="${id}"><i class="icon-bin"></i></a></td>
+      $("#table-body").html(`
+        <tr id="tr-${cliente.id} class="tr-clientes">
+          <td>${cliente.id} </td>
+          <td>${parseInt(cliente.fisicajuridica) ? cliente.nome : "-"}</td>
+          <td>${parseInt(cliente.fisicajuridica) ? cliente.cpf : "-"}</td>
+          <td>${!parseInt(cliente.fisicajuridica) ?  cliente.razaosocial : "-" } </td>
+          <td>${!parseInt(cliente.fisicajuridica) ? cliente.cnpj  : "-" }</td>
+          <td>${cliente.telefone ? cliente.telefone : '-'} </td>
+          <td>${cliente.email} </td>
+          <td><a class="table-link" href="editar/${cliente.id}"><i class="icon-pencil2"></i></a></td>
+          <td><a href="" class="excluir table-link" id="${cliente.id}" ><i class="icon-bin"></i></a></td>
         </tr>`);
-        let linkTr = $(`#${id}`)[0];
-        linkTr.addEventListener("click", excluir);
-      },
-      error: function ({ responseText }) {
+      let linkTr = $(`#${id}`)[0];
+      linkTr.addEventListener("click", excluir);
+    },
+    error: function ({ responseText }) {
+      $(".btn-resetar")[0].style.display = "none";
+
+      try {
         let {
-          veiculo: { error },
+          cliente: { error },
         } = JSON.parse(responseText);
 
         swal({
-          title: error,
+          title: "Error",
+          text: error,
           icon: "error",
         });
-      },
-    });
-  } else if (modoMarca.checked) {
-    $(".btn-resetar")[0].style.display = "inline-block"
-
-    $.ajax({
-      url: "" + pesquisa + "/marca",
-      method: "GET",
-      dataType: "JSON",
-      success: function ({ veiculos }) {
-        let tr = "";
-        veiculos.forEach((veiculo) => {
-          let { id, placa, modelo, marca, dataCadastro } = veiculo;
-          tr += `
-          <tr id="tr-${id}">
-            <td>${modelo}</td>
-            <td>${marca}</td>
-            <td>${placa}</td>
-            <td>${dataCadastro}</td>
-            <td><a  class="table-link" href="editar/${id}"><i class="icon-pencil2"></i></a></td>
-            <td><a href="" class="excluir table-link" id="${id}"><i class="icon-bin"></i></a></td>
-          </tr>`;
-        });
-        $("#table-body").html(tr);
-        veiculos.forEach(({ id }) => {
-          let linkTr = $(`#${id}`)[0];
-          linkTr.addEventListener("click", excluir);
-        });
-      },
-      error: function ({ responseText }) {
-        let {
-          veiculo: { error },
-        } = JSON.parse(responseText);
-
+      } catch (e) {
         swal({
-          title: error,
+          title: "Error",
+          text: "Erro ao pesquisar.",
           icon: "error",
         });
-      },
-    });
-  }else{
-    swal({
-      title: "Escolha o modo de pesquisa.",
-      icon: "error",
-    });
-  }
+      }
+    },
+  });
 }

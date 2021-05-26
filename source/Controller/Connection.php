@@ -12,7 +12,7 @@ class Connection
     {
         try {
             if (!isset(self::$instance)) {
-                self::$instance = new PDO("mysql:host=localhost;dbname=veiculo", "root", "root");
+                self::$instance = new PDO("mysql:host=localhost;dbname=mjaAlocacoes", "root", "root");
             }
             self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (Exception $e) {

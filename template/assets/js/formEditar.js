@@ -2,82 +2,229 @@ let btnEditar = $("#btn-editar")[0];
 
 btnEditar.addEventListener("click", validar);
 
-function validar(evt) {
-  evt.preventDefault();
+let cep = document.getElementById("cep");
+let telefone = document.getElementById("telefone");
+let maskcpfcnpj = null;
+let maskOptionsCep = {
+  mask: "00.000-000",
+};
 
-  let modelo = $("#modelo").val();
-  let placa = $("#placa").val();
-  let marca = $("#marca").val();
-  let id = $("#id").val();
+let maskOptionsTelefone = {
+  mask: "(00) 00000-0000",
+};
 
-  if (modelo === "") {
-    $("#modeloHelp").html("Campo obrigatorio");
-    $("#modeloHelp").fadeOut(10000);
+IMask(cep, maskOptionsCep);
+IMask(telefone, maskOptionsTelefone);
+
+onChangeFisicoJuridico(true);
+
+function onChangeFisicoJuridico(isFirst = false) {
+  let fisicaJuridica = $("#fisicaJuridica")[0];
+  let cpfcnpj = $("#cpfcnpj")[0];
+
+  if (isFirst) {
+    let maskOptionsCpfcnpj = {};
+    if (parseInt(fisicaJuridica.value)) {
+      maskOptionsCpfcnpj = {
+        mask: "000.000.000-00",
+      };
+    }else{
+      maskOptionsCpfcnpj = {
+        mask: '00.000.000/0000-00'
+      }
+    }
+  
+    maskCpfCnpj = IMask(cpfcnpj, maskOptionsCpfcnpj);
   }
 
-  if (modelo === "") {
-    $("#modeloHelp").html("Campo obrigatorio");
-    $("#modeloHelp").fadeOut(10000);
-  }
+  if (!isNaN(parseInt(fisicaJuridica.value))) {
+    $("#razao").attr({
+      disabled: parseInt(fisicaJuridica.value) ? true : false,
+    });
 
-  if (marca === "") {
-    $("#marcaHelp").html("Campo obrigatorio");
-    $("#marcaHelp").fadeOut(10000);
-  }
+    $("#Nome").attr({
+      disabled: !parseInt(fisicaJuridica.value) ? true : false,
+    });
 
-  if (placa === "") {
-    $("#placaHelp").html("Campo obrigatorio");
-    $("#placaHelp").fadeOut(10000);
-  }
+    if (parseInt(fisicaJuridica.value)) {
+      maskCpfCnpj.updateOptions({
+        mask: "000.000.000-00",
+      });
 
-  if (placa.length < 8) {
-    $("#placaHelp").html("Placa ivalida.");
-    $("#placaHelp").fadeOut(10000);
-  }
+      cpfcnpj.placeholder = "Ex: 000.000.000-00";
+      $("#label-razao").removeClass("required");
 
-  if (marca !== "" && placa !== "" && modelo !== "") {
-    editar(marca, placa, modelo, id);
+      $("#label-cpfcnpj").text("CPF");
+
+      $("#label-nome").addClass("required");
+    } else {
+      maskCpfCnpj.updateOptions({
+        mask: "00.000.000/0000-00",
+      });
+
+      cpfcnpj.placeholder = "Ex: 00.000.000/0000-00";
+      $("#label-razao").addClass("required");
+
+      $("#label-cpfcnpj").text("CNPJ");
+
+      $("#label-nome").removeClass("required");
+    }
   }
 }
 
-function editar(marca, placa, modelo, id) {
+function validar(evt) {
+  evt.preventDefault();
+  let cpf = "";
+  let cnpj = "";
+
+  let id = $("#id").val();
+  let idEndereco = $("#idEndereco").val();
+
+  let nome = $("#Nome").val();
+  let fisicaJuridica = parseInt($("#fisicaJuridica").val());
+  let email = $("#email").val();
+  let razao = $("#razao").val();
+  let pais = $("#pais").val();
+  let estado = $("#estado").val();
+  let cep = $("#cep").val();
+  let numero = parseInt($("#numero").val());
+  let cidade = $("#cidade").val();
+  let complemento = $("#complemento").val();
+  let telefone = $("#telefone").val();
+
+  if (fisicaJuridica) {
+    cpf = $("#cpfcnpj").val();
+  } else {
+    cnpj = $("#cpfcnpj").val();
+  }
+
+  let erro = "";
+
+  if (nome === "" && fisicaJuridica === 1) {
+    erro += "Informe o nome completo.\n";
+  }
+
+  if (isNaN(fisicaJuridica)) {
+    erro += "Informe o tipo de pessoa.\n";
+  }
+
+  if (cpf === "" && fisicaJuridica === 1) {
+    erro += `Informe o CPF.\n`;
+  } else if (cpf.length < 14 && fisicaJuridica === 1) {
+    erro += `Informe um CPF válido.\n`;
+  }
+
+  if (cnpj === "" && fisicaJuridica === 0) {
+    erro += `Informe o CNPJ.\n`;
+  } else if (fisicaJuridica === 0 && cnpj.length < 18) {
+    erro += `Informe um CNPJ válido.\n`;
+  }
+
+  if (razao === "" && fisicaJuridica === 0) {
+    erro += `Informe a razão social.\n`;
+  }
+
+  if (email === "") {
+    erro += `Informe o e-mail.\n`;
+  }
+
+  if (pais === "") {
+    erro += `Informe o pais.\n`;
+  }
+
+  if (estado === "") {
+    erro += `Informe o estado.\n`;
+  }
+
+  if (cep === "") {
+    erro += `Informe o cep.\n`;
+  } else if (cep.length < 10) {
+    erro += `Informe um CEP valido.\n`;
+  }
+
+  if (isNaN(numero)) {
+    erro += `Informe o numero.\n`;
+  }
+
+  if (cidade === "") {
+    erro += `Informe a cidade.\n`;
+  }
+
+  if (telefone && telefone.length < 15) {
+    erro += `Informe um telefone valido.\n`;
+  }
+
+  if (erro) {
+    swal({
+      title: "Campos obrigatorios.",
+      text: erro,
+      icon: "error",
+    });
+    return;
+  } else {
+    let cliente = {
+      id,
+      idEndereco,
+      nome,
+      fisicaJuridica,
+      cpf,
+      cnpj,
+      razao,
+      pais,
+      estado,
+      email,
+      cep,
+      numero,
+      cidade,
+      complemento,
+      telefone,
+    };
+
+    editar(cliente);
+  }
+}
+
+function editar(data) {
   $.ajax({
-    url: id,
+    url: data.id,
     method: "POST",
     dataType: "json",
-    data: {
-      id,
-      placa,
-      marca,
-      modelo,
-    },
+    data,
     beforeSend: function () {
       $("#btn-editar")
         .val("")
         .toggleClass("btn btn-outline-primary spinner-border text-primary");
     },
     success: function () {
-      $("#alert")
-        .removeClass("alert-danger")
-        .addClass("alert-success")
-        .fadeIn(1000)
-        .fadeOut(5000)
-        .html("Veiculo editado com sucesso.");
+      swal({
+        title: "Sucesso",
+        text: "Cliente editado com sucesso.",
+        icon: "success",
+      });
     },
     complete: function () {
       $("#btn-editar")
-        .val("Editar veiculo")
+        .val("Editar")
         .toggleClass("btn btn-outline-primary spinner-border text-primary");
     },
     error: function (response) {
-      let { veiculo } = JSON.parse(response.responseText);
+      try {
+        let { cliente } = JSON.parse(response.responseText);
 
-      $("#alert")
-        .removeClass("alert-success")
-        .addClass("alert-danger")
-        .fadeIn(1000)
-        .fadeOut(5000)
-        .html(veiculo.error);
+        if (cliente.error) {
+          swal({
+            title: cliente.error,
+            icon: 'error',
+          });
+        }
+      } catch (e) {
+        console.log("Erro: ", e.message);
+        swal({
+          title: "Erro",
+          text: "Erro ao tentar gravar.",
+          icon: "error",
+        });
+      }
     },
   });
 }

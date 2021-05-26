@@ -59,6 +59,18 @@ html {
   font-size: 1.25em;
 }
 
+.required{
+  position: relative;
+}
+
+.required::before{
+  content: '*';
+  position: absolute;
+  display: inline-block;
+  color: #f25;
+  right: -8px;
+}
+
 .table {
   margin-top: 1em;
   text-align: center;

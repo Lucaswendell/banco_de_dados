@@ -6,3 +6,8 @@ function url($param = null){
     }
     return $url;
 }
+
+function dd($var){
+    var_dump($var);
+    die();
+}
