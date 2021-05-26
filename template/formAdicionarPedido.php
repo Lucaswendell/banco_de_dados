@@ -17,7 +17,7 @@
             </div>
             <div class="form-group col-md-3">
                 <label class="required" id="label-data_abertura" for="data_abertura">Data abertura</label>
-                <input type="date" class="form-control" id="data_abertura">
+                <input type="date" class="form-control" id="data_abertura" >
             </div>
             <div class="form-group col-md-3">
                 <label class="required" id="label-data_realizacao" for="data_realizacao">Data realizacao</label>
@@ -30,6 +30,16 @@
                 <input type="text" class="form-control" id="local" placeholder="Ex: Cozinha">
         </div>
 
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label class="required" id="label-duração" for="duração">Duração do pedido</label>
+                <input type="text" class="form-control" id="duração" placeholder="Ex: 80:00">
+            </div>
+            <div class="form-group col-md-9">
+                <label class="required" id="label-total" for="total">Total do pedido</label>
+                <input type="text" class="form-control" id="total" placeholder="Ex: R$ 1200">
+            </div>
+        </div>
     </fieldset>
     <input type="submit" id="btn-adicionar" ng-click="adicionar();" value="Cadastrar" class="btn btn-outline-primary btn-form">
 </form>

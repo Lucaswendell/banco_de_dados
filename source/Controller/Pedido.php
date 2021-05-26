@@ -47,167 +47,79 @@ class Pedido extends Controller
     //     ]);
     // }
 
-    // public function adicionar(array $data): void
-    // {
-    //     try {
+    public function adicionar(array $data): void
+    {
+        try {
 
-    //         $cliente = new ClienteDao();
-    //         $clienteModel = new clienteModel();
+            $cliente = new ClienteDao();
+            $clienteModel = new clienteModel();
 
-    //         if ((empty($data["cpf"]) && $data["fisicaJuridica"]) || (empty($data["razao"]) && !$data["fisicaJuridica"])  || empty($data["pais"]) ||
-    //             empty($data["estado"]) || empty($data["email"]) || empty($data["cep"])    ||
-    //             empty($data["numero"]) || empty($data['cidade'])  || (empty($data["nome"]) && $data["fisicaJuridica"]) ||
-    //             (empty($data["cnpj"]) && !$data["fisicaJuridica"])
-    //         ) {
-    //             http_response_code(400);
-    //             echo $this->ajaxResponse("cliente", ["error" => "Preencha todos os campos."]);
-    //             die();
-    //         }
-
-
-    //         $clienteModel->setFisicaJuridica($data["fisicaJuridica"]);
-    //         if ($data["fisicaJuridica"]) {
-    //             $clienteModel->setCpf($data["cpf"]);
-    //         } else {
-    //             $clienteModel->setCnpj($data["cnpj"]);
-    //         }
-
-    //         $clienteModel->setRazaoSocial($data["razao"]);
-    //         $clienteModel->setEmail($data["email"]);
-    //         $clienteModel->setNome($data["nome"]);
-    //         $clienteModel->setTelefone($data["telefone"]);
-
-    //         $clienteModel->getEndereco()->setPais($data["pais"]);
-    //         $clienteModel->getEndereco()->setEstado($data["estado"]);
-    //         $clienteModel->getEndereco()->setNumero($data["numero"]);
-    //         $clienteModel->getEndereco()->setCidade($data["cidade"]);
-    //         $clienteModel->getEndereco()->setComplemento($data["complemento"]);
-    //         $clienteModel->getEndereco()->setCep($data["cep"]);
+            if ((empty($data["cpf"]) && $data["fisicaJuridica"]) || (empty($data["razao"]) && !$data["fisicaJuridica"])  || empty($data["pais"]) ||
+                empty($data["estado"]) || empty($data["email"]) || empty($data["cep"])    ||
+                empty($data["numero"]) || empty($data['cidade'])  || (empty($data["nome"]) && $data["fisicaJuridica"]) ||
+                (empty($data["cnpj"]) && !$data["fisicaJuridica"])
+            ) {
+                http_response_code(400);
+                echo $this->ajaxResponse("cliente", ["error" => "Preencha todos os campos."]);
+                die();
+            }
 
 
-    //         $clienteModel = $cliente->save($clienteModel);
+            $clienteModel->setFisicaJuridica($data["fisicaJuridica"]);
+            if ($data["fisicaJuridica"]) {
+                $clienteModel->setCpf($data["cpf"]);
+            } else {
+                $clienteModel->setCnpj($data["cnpj"]);
+            }
 
-    //         if (gettype($clienteModel) == "string" && $clienteModel == "23000") {
-    //             throw new Exception("Cliente já cadastrado.");
-    //         }
+            $clienteModel->setRazaoSocial($data["razao"]);
+            $clienteModel->setEmail($data["email"]);
+            $clienteModel->setNome($data["nome"]);
+            $clienteModel->setTelefone($data["telefone"]);
 
-    //         if (gettype($clienteModel) != "string") {
-    //             echo $this->ajaxResponse("Cliente", [
-    //                 "id"             => $clienteModel->getId(),
-    //                 "FisicaJuridica" => $clienteModel->getFisicaJuridica(),
-    //                 "Telefone"       => $clienteModel->getTelefone(),
-    //                 "Cpf"            => $clienteModel->getCpf(),
-    //                 "Cnpj"           => $clienteModel->getCnpj(),
-    //                 "RazaoSocial"    => $clienteModel->getRazaoSocial(),
-    //                 "Email"          => $clienteModel->getEmail(),
-    //                 "Nome"           => $clienteModel->getNome(),
-
-    //                 "Pais"           => $clienteModel->getEndereco()->getPais(),
-    //                 "Estado"         => $clienteModel->getEndereco()->getEstado(),
-    //                 "Numero"         => $clienteModel->getEndereco()->getNumero(),
-    //                 "Cidade"         => $clienteModel->getEndereco()->getCidade(),
-    //                 "Complemento"    => $clienteModel->getEndereco()->getComplemento(),
-    //                 "Cep"            => $clienteModel->getEndereco()->getCep(),
-    //             ]);
-    //         } else {
-    //             throw new Exception("Erro ao cadastrar cliente.");
-    //         }
-    //     } catch (Exception $e) {
-    //         http_response_code(400);
-    //         echo $this->ajaxResponse("cliente", ["error" => $e->getMessage()]);
-    //         die();
-    //     }
-    // }
+            $clienteModel->getEndereco()->setPais($data["pais"]);
+            $clienteModel->getEndereco()->setEstado($data["estado"]);
+            $clienteModel->getEndereco()->setNumero($data["numero"]);
+            $clienteModel->getEndereco()->setCidade($data["cidade"]);
+            $clienteModel->getEndereco()->setComplemento($data["complemento"]);
+            $clienteModel->getEndereco()->setCep($data["cep"]);
 
 
+            $clienteModel = $cliente->save($clienteModel);
 
-    // public function excluir(array $data)
-    // {
-    //     $id = addslashes($data["id"]);
-    //     $id = htmlspecialchars_decode($id);
+            if (gettype($clienteModel) == "string" && $clienteModel == "23000") {
+                throw new Exception("Cliente já cadastrado.");
+            }
 
-    //     if (empty($id)) {
-    //         http_response_code(400);
-    //         echo $this->ajaxResponse("Cliente", ["error" => "Cliente invalido."]);
-    //         die();
-    //     }
+            if (gettype($clienteModel) != "string") {
+                echo $this->ajaxResponse("Cliente", [
+                    "id"             => $clienteModel->getId(),
+                    "FisicaJuridica" => $clienteModel->getFisicaJuridica(),
+                    "Telefone"       => $clienteModel->getTelefone(),
+                    "Cpf"            => $clienteModel->getCpf(),
+                    "Cnpj"           => $clienteModel->getCnpj(),
+                    "RazaoSocial"    => $clienteModel->getRazaoSocial(),
+                    "Email"          => $clienteModel->getEmail(),
+                    "Nome"           => $clienteModel->getNome(),
 
-    //     $cliente = new ClienteDao();
-    //     $result = $cliente->delete($id);
-    //     if ($result) {
-    //         echo $this->ajaxResponse("cliente", ["success" => "Cliente deletado com sucesso."]);
-    //     } else {
-    //         http_response_code(400);
+                    "Pais"           => $clienteModel->getEndereco()->getPais(),
+                    "Estado"         => $clienteModel->getEndereco()->getEstado(),
+                    "Numero"         => $clienteModel->getEndereco()->getNumero(),
+                    "Cidade"         => $clienteModel->getEndereco()->getCidade(),
+                    "Complemento"    => $clienteModel->getEndereco()->getComplemento(),
+                    "Cep"            => $clienteModel->getEndereco()->getCep(),
+                ]);
+            } else {
+                throw new Exception("Erro ao cadastrar cliente.");
+            }
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo $this->ajaxResponse("cliente", ["error" => $e->getMessage()]);
+            die();
+        }
+    }
 
-    //         echo $this->ajaxResponse("cliente", ["error" => $result]);
-    //         die();
-    //     }
-    // }
-
-    // public function editar(array $data)
-    // {
-    //     $cliente = new ClienteDao();
-    //     $clienteModel = new clienteModel();
-
-    //     if ((empty($data["razao"]) && !$data["fisicaJuridica"])  || empty($data["pais"]) ||
-    //         empty($data["estado"]) || empty($data["email"]) || empty($data["cep"])    ||
-    //         empty($data["numero"]) || empty($data['cidade'])  || (empty($data["nome"]) && $data["fisicaJuridica"])
-    //     ) {
-    //         http_response_code(400);
-    //         echo $this->ajaxResponse("cliente", ["error" => "Preencha todos os campos."]);
-    //         die();
-    //     }
-
-
-    //     $clienteModel->setId($data["id"]);
-    //     $clienteModel->setRazaoSocial($data["razao"]);
-    //     $clienteModel->setEmail($data["email"]);
-    //     $clienteModel->setNome($data["nome"]);
-    //     $clienteModel->setTelefone($data["telefone"]);
-
-    //     $clienteModel->getEndereco()->setId($data["idEndereco"]);
-    //     $clienteModel->getEndereco()->setCliente($clienteModel->getId());
-    //     $clienteModel->getEndereco()->setPais($data["pais"]);
-    //     $clienteModel->getEndereco()->setEstado($data["estado"]);
-    //     $clienteModel->getEndereco()->setNumero($data["numero"]);
-    //     $clienteModel->getEndereco()->setCidade($data["cidade"]);
-    //     $clienteModel->getEndereco()->setComplemento($data["complemento"]);
-    //     $clienteModel->getEndereco()->setCep($data["cep"]);
-                
-    //     $clienteModel = $cliente->save($clienteModel);
-
-    //     if (gettype($clienteModel) == "string" && $clienteModel == "23000") {
-    //         throw new Exception("Cliente já cadastrado.");
-    //     }
-
-    //     if ((bool)$clienteModel) {
-    //         echo $this->ajaxResponse("Cliente", ["success" => "cliente editado com sucesso."]);
-    //     } else {
-    //         http_response_code(400);
-    //         echo $this->ajaxResponse("cliente", ["error" => "Erro ao editar cliente."]);
-    //     }
-    // }
-
-    // public function formEditar(array $data)
-    // {
-    //     $id = addslashes($data["id"]);
-    //     $id = htmlspecialchars_decode($id);
-
-    //     if (empty($id)) {
-    //         http_response_code(400);
-    //         echo $this->ajaxResponse("Cliente", ["error" => "Cliente invalido."]);
-    //         die();
-    //     }
-
-    //     $ClienteDao = new ClienteDao();
-    //     $cliente = $ClienteDao->fetch($id);
-
-    //     echo $this->view->render("formEditar", [
-    //         "title" => "MJAAlocaçoes | Editar",
-    //         "cliente" => $cliente
-    //     ]);
-    // }
-
+    
     public function formAdicionar(array $data) 
     {
         $id = addslashes($data["cliente"]);
@@ -230,7 +142,7 @@ class Pedido extends Controller
         }
 
         echo $this->view->render("formAdicionarPedido", [
-            "title" => "MJA Alocacoes | Adicionar Clientes",
+            "title" => "MJA Alocacoes | Adicionar Servicos",
             "nome" => $nome,
         ]);
     }
