@@ -27,7 +27,7 @@ function excluir(evt) {
         dataType: "JSON",
         success: function (result) {
           $("#tr-" + id).fadeOut(500);
-          let clientes = $(".clientes");
+          let clientes = $(".tr-clientes");
 
           if (clientes.length === 0) {
             $("#table-body").html(`
