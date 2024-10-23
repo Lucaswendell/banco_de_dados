@@ -1,4 +1,4 @@
 <?php
 define("SITE",[
-    "url" => "http://localhost/mjaAlocacoes"
+    "url" => "http://localhost:8081/"
 ]);
