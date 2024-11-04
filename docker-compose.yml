@@ -1,0 +1,17 @@
+services:
+  web:
+    image: nginx:latest  
+    container_name: nginx  
+    restart: always  
+    ports:   
+      - "8081:80"  
+    volumes:
+        - ./:/www    
+        - ./default.conf:/etc/nginx/conf.d/default.conf  
+    links:
+      - php 
+  php:
+    build: .
+    container_name: php_app
+    volumes:
+        - ./:/www
